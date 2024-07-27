@@ -24,7 +24,8 @@ public class Assignment {
     @Column(name = "review_video_url")
     private String reviewVideoUrl;
 
-    @Column(name = "users")
+    @ManyToOne(optional = false)
+    @JoinTable(name = "users")
     private User user;
 
     public Assignment() {

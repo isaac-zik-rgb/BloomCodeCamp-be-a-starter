@@ -1,5 +1,6 @@
 package com.hcc.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -11,11 +12,10 @@ public class Authority implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @Column(name = "authority")
+    @Column(name = "authority", nullable = false)
     private String authority;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "users")
+    @ManyToOne
     private User user;
 
     public Authority() {

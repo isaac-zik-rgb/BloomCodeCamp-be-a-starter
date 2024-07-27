@@ -1,8 +1,10 @@
 package com.hcc.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,23 +14,36 @@ import java.util.List;
 
 @Entity
 @Table(name="users")
-public class User implements UserDetails {
+public final class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "cohort_start_date")
     private LocalDate cohortStartDate;
+
+    @Column(name = "username", nullable = false)
     private String username;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+
+    @JsonIgnoreProperties
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Authority> authorities;
+
 
     public User() {
 
     }
 
+
+
     public User(LocalDate cohortStartDate, String username, String password) {
         this.cohortStartDate = cohortStartDate;
         this.password = password;
         this.username = username;
+
     }
 
     public Long getId() {
@@ -48,10 +63,8 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-       List<GrantedAuthority> roles = new ArrayList<>();
-       roles.add(new Authority("role_student"));
-       return roles;
+    public Collection<? extends  GrantedAuthority> getAuthorities() {
+       return authorities;
     }
     @Override
     public String getPassword() {
@@ -90,4 +103,9 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+    public void addAuthority(Authority authority) {
+        authority.setUser(this);
+        this.authorities.add(authority);
+    }
+
 }
