@@ -1,5 +1,6 @@
 package com.hcc.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,15 +22,14 @@ public final class User implements UserDetails {
     @Column(name = "cohort_start_date")
     private LocalDate cohortStartDate;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-
-    @JsonIgnoreProperties
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonIgnore
     private List<Authority> authorities;
 
 
@@ -46,6 +46,7 @@ public final class User implements UserDetails {
 
     }
 
+    //getters and setters
     public Long getId() {
         return id;
     }
@@ -64,7 +65,7 @@ public final class User implements UserDetails {
 
     @Override
     public Collection<? extends  GrantedAuthority> getAuthorities() {
-       return authorities;
+       return new ArrayList<>(authorities);
     }
     @Override
     public String getPassword() {
@@ -103,9 +104,9 @@ public final class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-    public void addAuthority(Authority authority) {
-        authority.setUser(this);
-        this.authorities.add(authority);
+    public void setAuthority(List<Authority> authorities) {
+
+        this.authorities = authorities;
     }
 
 }

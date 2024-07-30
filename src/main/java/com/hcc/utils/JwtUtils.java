@@ -5,16 +5,22 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
-public class JwtUtils {
+public class JwtUtils implements Serializable {
     // we need to set an expiration for the token
     public static long JWT_TOKEN_EXPIRATION = 60 * 60 * 24;
 
@@ -49,19 +55,22 @@ public class JwtUtils {
     }
     // generate the token
 
-    public String generateToken(User user) {
-        return doGenerateToken(user.getUsername());
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("authorities", userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
+
+
+        return doGenerateToken(claims, userDetails.getUsername());
     }
 
-    private String doGenerateToken(String subject) {
-        Claims claims = Jwts.claims()
-                .setSubject(subject);
-        claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_LEARNER"),
-                new SimpleGrantedAuthority("ROLE_CODE_REVIEWER")));
+    private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .addClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_EXPIRATION))
+                .setClaims(claims).setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_EXPIRATION*1000))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }

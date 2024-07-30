@@ -10,5 +10,5 @@ import java.util.Set;
 
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
-    public Set<Assignment> findByUser_Username(String username);
+    public Set<Assignment> findByUser(User user);
 }

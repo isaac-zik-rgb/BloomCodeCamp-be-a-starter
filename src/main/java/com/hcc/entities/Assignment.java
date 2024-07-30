@@ -21,12 +21,14 @@ public class Assignment {
     @Column(name = "github_url")
     private String githubUrl;
 
-    @Column(name = "review_video_url")
-    private String reviewVideoUrl;
+    @Column(name = "code_review_video_url")
+    private String codeReviewVideoUrl;
 
     @ManyToOne(optional = false)
-    @JoinTable(name = "users")
     private User user;
+
+    @ManyToOne
+    private User codeReviewer;
 
     public Assignment() {
 
@@ -36,11 +38,12 @@ public class Assignment {
         this.status = status;
         this.number = number;
         this.branch = branch;
-        this.reviewVideoUrl = reviewVideoUrl;
+        this.codeReviewVideoUrl = reviewVideoUrl;
         this.user = user;
         this.githubUrl = githubUrl;
     }
 
+    //getters and setters
     public Long getId() {
         return id;
     }
@@ -73,12 +76,12 @@ public class Assignment {
         this.branch = branch;
     }
 
-    public String getReviewVideoUrl() {
-        return reviewVideoUrl;
+    public String getCodeReviewVideoUrl() {
+        return codeReviewVideoUrl;
     }
 
-    public void setReviewVideoUrl(String reviewVideoUrl) {
-        this.reviewVideoUrl = reviewVideoUrl;
+    public void setCodeReviewVideoUrl(String codeReviewVideoUrl) {
+        this.codeReviewVideoUrl = codeReviewVideoUrl;
     }
 
     public User getUser() {
@@ -95,4 +98,9 @@ public class Assignment {
     public void setGithubUrl(String githubUrl) {
         this.githubUrl = githubUrl;
     }
+
+    public User getCodeReviewer() {
+        return codeReviewer;
+    }
+    public void setCodeReviewer(User codeReviewer) { this.codeReviewer = codeReviewer;}
 }
