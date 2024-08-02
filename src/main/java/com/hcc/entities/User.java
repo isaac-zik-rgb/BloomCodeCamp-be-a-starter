@@ -19,6 +19,8 @@ public final class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
     @Column(name = "cohort_start_date")
     private LocalDate cohortStartDate;
 
@@ -26,6 +28,7 @@ public final class User implements UserDetails {
     private String username;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
@@ -65,7 +68,7 @@ public final class User implements UserDetails {
 
     @Override
     public Collection<? extends  GrantedAuthority> getAuthorities() {
-       return new ArrayList<>(authorities);
+      return this.authorities;
     }
     @Override
     public String getPassword() {
@@ -98,7 +101,7 @@ public final class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public void setUsername(String username) {

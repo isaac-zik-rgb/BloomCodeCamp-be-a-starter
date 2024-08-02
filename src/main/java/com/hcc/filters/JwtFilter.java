@@ -47,6 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
         System.out.println(token);
         // Get user identity
         UserDetails userDetails = userRepo.findByUsername(jwtUtils.getUsernameFromToken(token)).orElse(null);
+        System.out.println(userDetails.getUsername());
 
         if (!jwtUtils.validateToken(token, userDetails)) {
             filterChain.doFilter(request,response);

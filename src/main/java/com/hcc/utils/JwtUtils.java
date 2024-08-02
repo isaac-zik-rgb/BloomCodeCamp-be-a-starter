@@ -42,17 +42,20 @@ public class JwtUtils implements Serializable {
         return Jwts
                 .parser()
                 .setSigningKey(secret)
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
     //get expiration from the token
     public Date getTokenExpirationDate(String token) {
-       return getClaimFromToken(token, Claims::getExpiration);
+        return getClaimFromToken(token, Claims::getExpiration);
     }
+
+    //check if token has expired
     public boolean isTokenExpired(String token) {
         Date expirationDate = getTokenExpirationDate(token);
         return  expirationDate.before(new Date());
     }
+
     // generate the token
 
     public String generateToken(UserDetails userDetails) {

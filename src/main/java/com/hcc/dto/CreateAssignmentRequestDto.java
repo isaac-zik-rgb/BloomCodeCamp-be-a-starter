@@ -1,9 +1,13 @@
 package com.hcc.dto;
 
+import com.hcc.enums.AssignmentEnum;
+import com.hcc.enums.AssignmentStatusEnum;
+
 public class CreateAssignmentRequestDto {
     private String githubUrl;
     private String branch;
     private int number;
+    private String status;
 
     public CreateAssignmentRequestDto() {
     }
@@ -12,6 +16,7 @@ public class CreateAssignmentRequestDto {
         this.githubUrl = githubUrl;
         this.branch = branch;
         this.number = number;
+        this.status = AssignmentStatusEnum.PENDING_SUBMISSION.getStatus();
     }
 
     public String getGithubUrl() {
@@ -36,5 +41,13 @@ public class CreateAssignmentRequestDto {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
