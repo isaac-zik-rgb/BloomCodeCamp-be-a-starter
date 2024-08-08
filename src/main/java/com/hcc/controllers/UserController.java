@@ -15,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
@@ -39,13 +42,18 @@ public class UserController {
 
             User user = (User) authenticate.getPrincipal();
             user.setPassword(null);
-
+            System.out.println("done");
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("username", user.getUsername());
+            token =  jwtUtil.generateToken(user);
+            responseBody.put("token", token);
             return ResponseEntity.ok()
                     .header(
                             HttpHeaders.AUTHORIZATION,
-                          token =  jwtUtil.generateToken(user)
+                         token
                     )
-                    .body(user.getUsername() + "\n" + "Token: " + token);
+
+                    .body(responseBody);
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

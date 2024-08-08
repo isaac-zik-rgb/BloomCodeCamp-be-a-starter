@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/assignments")
+@CrossOrigin(origins = "*")
 public class AssignmentController {
 
 @Autowired
@@ -34,7 +35,8 @@ public class AssignmentController {
 @Autowired
 private JwtUtils jwtUtils;
 //100810
-@GetMapping("/assignments")
+
+@GetMapping("/")
     public ResponseEntity<?> getAllAssignments() {
     try {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -51,7 +53,7 @@ private JwtUtils jwtUtils;
     }
 }
 
-@PostMapping("/assignments")
+@PostMapping("/")
     public ResponseEntity<?> createAssignment(@RequestBody CreateAssignmentRequestDto postAssign) {
     // get the authenticated user
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
