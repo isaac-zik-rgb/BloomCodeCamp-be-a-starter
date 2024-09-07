@@ -37,20 +37,9 @@ private JwtUtils jwtUtils;
 //100810
 
 @GetMapping("/")
-    public ResponseEntity<?> getAllAssignments() {
-    try {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                User user =  (User) authentication.getPrincipal();
-                System.out.println(user.getUsername());
-                List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-                if (authorities.contains(AuthorityEnum.ROLE_REVIEWER.name())){
-                    System.out.println(true);
-                    return ResponseEntity.ok(assignmentsService.findAll());
-                }
-                return ResponseEntity.ok(assignmentsService.getAssignmentsByUser(user));
-    }catch (BadCredentialsException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
+    public ResponseEntity<?> getAllAssignments(@AuthenticationPrincipal User user) {
+    List<Assignment> assignmentsList = assignmentsService.getAssignmentsByUser(user);
+    return ResponseEntity.ok(assignmentsList);
 }
 
 @PostMapping("/")
@@ -73,7 +62,7 @@ private JwtUtils jwtUtils;
 
 }
 
-@GetMapping("/assignments/{id}")
+@GetMapping("/{id}")
     public ResponseEntity<?> getAssignmentById(@PathVariable Long id) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User user = (User) authentication.getPrincipal();
@@ -95,7 +84,7 @@ private JwtUtils jwtUtils;
 
 }
 
-@PutMapping("/assignments/{id}")
+@PutMapping("/{id}")
     public ResponseEntity<?> updateAssignment(@PathVariable Long id, @RequestBody UpdateAssignmentDto updateA) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -113,7 +102,7 @@ private JwtUtils jwtUtils;
     return ResponseEntity.ok(assignmentsService.saveAssignment(assignment));
     //if assignment status is in review
 }
-@GetMapping("/assignment/reviews")
+@GetMapping("/reviews")
     public ResponseEntity<?> getAllReviewsAssignmentByCodeReviewer(){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User user = (User) authentication.getPrincipal();

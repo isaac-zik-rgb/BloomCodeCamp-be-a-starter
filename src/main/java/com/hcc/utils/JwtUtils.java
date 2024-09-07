@@ -66,6 +66,7 @@ public class JwtUtils implements Serializable {
                 .collect(Collectors.toList()));
 
 
+
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

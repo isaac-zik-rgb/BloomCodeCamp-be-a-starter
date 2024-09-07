@@ -20,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -27,7 +28,7 @@ public class UserController {
 
     @Autowired
     JwtUtils jwtUtil;
-    @CrossOrigin("*")
+
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginRequest req) {
         String token = null;
